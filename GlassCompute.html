@@ -3,220 +3,584 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>眼镜镜片厚度简易计算器</title>
+    <title>眼镜边框计算器</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
+            padding: 20px;
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f8ff 100%);
+            min-height: 100vh;
         }
         .container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 153, 153, 0.2);
+            border: 1px solid #009999;
         }
-        h4 {
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .lang-btn {
+            padding: 6px 14px;
+            border: 2px solid #009999;
+            background: #fff;
+            color: #009999;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .lang-btn.active {
+            background: #009999;
+            color: #fff;
+        }
+        h1 {
+            color: #006666;
             text-align: center;
-            color: #333;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+        .step-indicator {
+            text-align: center;
+            padding: 10px;
+            background: #ccc;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .form-section, .result-section {
+            background: #f0ffff;
+            border: 1px solid #00cccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .result-section {
+            display: none;
+        }
+
+        /* 表单栅格布局 - 两列 */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px 25px;
+        }
+        .form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: bold;
+            color: #006666;
+            margin-bottom: 5px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 9px 10px;
+            border: 2px solid #00cccc;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #009999;
+            box-shadow: 0 0 6px rgba(0, 153, 153, 0.3);
+        }
+
+        .form-images {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 15px 0 5px;
+        }
+        .form-images img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 153, 153, 0.15);
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 12px;
+            background: #009999;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 102, 102, 0.2);
+        }
+        .btn-calc:hover {
+            background: #007777;
+            transform: translateY(-2px);
+        }
+
+        .result-info p {
+            font-size: 15px;
+            margin: 6px 0;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 153, 153, 0.1);
         }
         th, td {
-            padding: 8px;
+            border: 1px solid #00cccc;
+            padding: 10px 12px;
             text-align: center;
+            font-size: 14px;
         }
         th {
-            background-color: #009999;
-            color: white;
-        }
-        .form-section {
-            background-color: #eeeeff;
-            padding: 20px;
-            border-radius: 4px;
-        }
-        .result-section {
-            display: none;
-            background-color: #eeeeff;
-            padding: 20px;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-        .button {
-            background-color: #009999;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin: 10px;
-            border-radius: 4px;
-        }
-        .button:hover {
-            background-color: #007777;
-        }
-        select, input {
-            padding: 5px;
-            margin: 5px;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            margin: 10px 0;
-        }
-        .step-indicator {
-            background-color: #cccccc;
-            padding: 10px;
-            text-align: center;
+            background: #009999;
+            color: #fff;
             font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background: #f5ffff;
+        }
+
+        .navigation {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .navigation a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 8px 18px;
+            border: 2px solid #009999;
+            border-radius: 25px;
+            color: #009999;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .navigation a:hover {
+            background: #009999;
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h4>眼镜镜片厚度简易计算器</h4>
-        
-        <!-- 步骤指示器 -->
-        <div class="step-indicator">
-            输入参数 >> 计算结果
+        <div class="lang-switch">
+            <button class="lang-btn active" onclick="switchLang('zh')">中文</button>
+            <button class="lang-btn" onclick="switchLang('en')">English</button>
         </div>
-        
-        <!-- 输入表单 -->
+
+        <h1>眼镜边框计算器</h1>
+
+        <!-- 步骤1：输入参数 -->
         <div class="form-section">
-            <p>中心距离 = <input type="text" id="distance" value="29" readonly style="width: 50px;"> 毫米</p>
-            <p>镜片材质 选择 >> <select id="material" style="width: 160px;">
-                <option value="">--请选择--</option>
-                <option value="塑料">塑料</option>
-                <option value="玻璃">玻璃</option>
-            </select></p>
-            <p>度数 选择 >> <select id="power" style="width: 160px;">
-                <option value="">--请选择--</option>
-                <option value="-1.00">-1.00</option>
-                <option value="-1.25">-1.25</option>
-                <option value="-1.50">-1.50</option>
-                <option value="-1.75">-1.75</option>
-                <option value="-2.00">-2.00</option>
-                <option value="-2.25">-2.25</option>
-                <option value="-2.50">-2.50</option>
-                <option value="-2.75">-2.75</option>
-                <option value="-3.00">-3.00</option>
-                <option value="-3.25">-3.25</option>
-                <option value="-3.50">-3.50</option>
-                <option value="-3.75">-3.75</option>
-                <option value="-4.00">-4.00</option>
-                <option value="-4.25">-4.25</option>
-                <option value="-4.50">-4.50</option>
-                <option value="-4.75">-4.75</option>
-                <option value="-5.00">-5.00</option>
-                <option value="-5.25">-5.25</option>
-                <option value="-5.50">-5.50</option>
-                <option value="-5.75">-5.75</option>
-                <option value="-6.00">-6.00</option>
-                <option value="-6.25">-6.25</option>
-                <option value="-6.50">-6.50</option>
-                <option value="-6.75">-6.75</option>
-                <option value="-7.00">-7.00</option>
-                <option value="-7.25">-7.25</option>
-                <option value="-7.50">-7.50</option>
-                <option value="-7.75">-7.75</option>
-                <option value="-8.00">-8.00</option>
-                <option value="-8.25">-8.25</option>
-                <option value="-8.50">-8.50</option>
-                <option value="-8.75">-8.75</option>
-                <option value="-9.00">-9.00</option>
-                <option value="-9.25">-9.25</option>
-                <option value="-9.50">-9.50</option>
-                <option value="-9.75">-9.75</option>
-                <option value="-10.00">-10.00</option>
-            </select></p>
-            <img src="img/01.gif" alt="输入参数图片">
-            <img src="img/calculating.gif" alt="计算中图片">
-            <br>
-            <button class="button" onclick="calculate()">镜片厚度计算</button>
+            <div class="step-indicator">步骤1：输入参数</div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="pupilDistance">瞳孔间距（毫米）：</label>
+                    <input type="number" id="pupilDistance" value="64" min="50" max="80" placeholder="请输入瞳孔间距">
+                </div>
+                <div class="form-group">
+                    <label for="frameWidth">镜框宽度（毫米）：</label>
+                    <input type="number" id="frameWidth" value="140" min="120" max="160" placeholder="请输入镜框宽度">
+                </div>
+                <div class="form-group">
+                    <label for="noseDistance">鼻间距（毫米）：</label>
+                    <input type="number" id="noseDistance" value="20" min="15" max="30" placeholder="请输入鼻间距">
+                </div>
+                <div class="form-group">
+                    <label for="degree">度数：</label>
+                    <select id="degree">
+                        <option value="">请选择度数</option>
+                        <option value="-0.25">-0.25</option><option value="-0.50">-0.50</option>
+                        <option value="-0.75">-0.75</option><option value="-1.00">-1.00</option>
+                        <option value="-1.25">-1.25</option><option value="-1.50">-1.50</option>
+                        <option value="-1.75">-1.75</option><option value="-2.00">-2.00</option>
+                        <option value="-2.25">-2.25</option><option value="-2.50">-2.50</option>
+                        <option value="-2.75">-2.75</option><option value="-3.00">-3.00</option>
+                        <option value="-3.25">-3.25</option><option value="-3.50">-3.50</option>
+                        <option value="-3.75">-3.75</option><option value="-4.00">-4.00</option>
+                        <option value="-4.25">-4.25</option><option value="-4.50">-4.50</option>
+                        <option value="-4.75">-4.75</option><option value="-5.00">-5.00</option>
+                        <option value="-5.25">-5.25</option><option value="-5.50">-5.50</option>
+                        <option value="-5.75">-5.75</option><option value="-6.00">-6.00</option>
+                        <option value="-6.25">-6.25</option><option value="-6.50">-6.50</option>
+                        <option value="-6.75">-6.75</option><option value="-7.00">-7.00</option>
+                        <option value="-7.25">-7.25</option><option value="-7.50">-7.50</option>
+                        <option value="-7.75">-7.75</option><option value="-8.00">-8.00</option>
+                        <option value="-8.25">-8.25</option><option value="-8.50">-8.50</option>
+                        <option value="-8.75">-8.75</option><option value="-9.00">-9.00</option>
+                        <option value="-9.25">-9.25</option><option value="-9.50">-9.50</option>
+                        <option value="-9.75">-9.75</option><option value="-10.00">-10.00</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lensMaterial">镜片材质：</label>
+                    <select id="lensMaterial">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lensType">镜片类型：</label>
+                    <select id="lensType">
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-images">
+                <img src="img/01.gif" alt="眼镜测量示意图">
+            </div>
+
+            <button class="btn-calc" id="calcBtn">计算镜片厚度</button>
         </div>
-        
-        <!-- 结果显示 -->
-        <div id="result-section" class="result-section">
-            <h4>计算结果</h4>
-            <p id="result-params"></p>
-            <table border="1" cellpadding="8" bgcolor="#009999">
-                <tbody>
+
+        <!-- 步骤2：结果 -->
+        <div id="resultSection" class="result-section">
+            <div class="step-indicator">步骤2：计算结果</div>
+
+            <div class="result-info">
+                <p>瞳孔间距 = <span id="resultPupilDistance">64</span> 毫米</p>
+                <p>镜框宽度 = <span id="resultFrameWidth">140</span> 毫米</p>
+                <p>鼻间距 = <span id="resultNoseDistance">20</span> 毫米</p>
+                <p>镜片材质 = <span id="resultLensMaterial">塑料</span></p>
+                <p>镜片类型 = <span id="resultLensType">1.76非球面</span></p>
+                <p>度数 = <span id="resultDegree">-4.50</span></p>
+            </div>
+
+            <table>
+                <thead>
                     <tr>
-                        <td bgcolor="#ffffff">屈折率·设计</td>
-                        <td bgcolor="#ffffff">中心厚</td>
-                        <td bgcolor="#ffffff">周边厚</td>
+                        <th>屈折率·设计</th>
+                        <th>中心厚</th>
+                        <th>周边厚</th>
                     </tr>
-                    <tr>
-                        <td bgcolor="#ffffff">1.76 非球面</td>
-                        <td bgcolor="#ffffff">1.0</td>
-                        <td bgcolor="#ffffff">3.4</td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff">1.74 非球面</td>
-                        <td bgcolor="#ffffff">1.0</td>
-                        <td bgcolor="#ffffff">3.6</td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff">1.70 非球面</td>
-                        <td bgcolor="#ffffff">1.0</td>
-                        <td bgcolor="#ffffff">3.6</td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff">1.67 非球面</td>
-                        <td bgcolor="#ffffff">1.1</td>
-                        <td bgcolor="#ffffff">3.9</td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff">1.60 非球面</td>
-                        <td bgcolor="#ffffff">1.3</td>
-                        <td bgcolor="#ffffff">4.4</td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff">1.60 球面</td>
-                        <td bgcolor="#ffffff">1.3</td>
-                        <td bgcolor="#ffffff">4.6</td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff">1.50 非球面</td>
-                        <td bgcolor="#ffffff">1.6</td>
-                        <td bgcolor="#ffffff">5.4</td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff">1.50 球面</td>
-                        <td bgcolor="#ffffff">2.0</td>
-                        <td bgcolor="#ffffff">6.1</td>
-                    </tr>
+                </thead>
+                <tbody id="resultTableBody">
                 </tbody>
             </table>
+
+            <div class="navigation">
+                <a href="#" onclick="resetCalculator(); return false;">重新计算</a>
+                <a href="#" onclick="history.back(); return false;">返回</a>
+            </div>
         </div>
     </div>
 
     <script>
+        const translations = {
+            zh: {
+                title: '眼镜边框计算器',
+                h1: '眼镜边框计算器',
+                step1: '步骤1：输入参数',
+                step2: '步骤2：计算结果',
+                pupilDistance: '瞳孔间距（毫米）：',
+                frameWidth: '镜框宽度（毫米）：',
+                noseDistance: '鼻间距（毫米）：',
+                lensMaterial: '镜片材质：',
+                lensType: '镜片类型：',
+                degree: '度数：',
+                selectDegree: '请选择度数',
+                calculateBtn: '计算镜片厚度',
+                resultPupil: '瞳孔间距 = ',
+                resultFrame: '镜框宽度 = ',
+                resultNose: '鼻间距 = ',
+                resultMaterial: '镜片材质 = ',
+                resultType: '镜片类型 = ',
+                resultDegree: '度数 = ',
+                tableDesign: '屈折率·设计',
+                tableCenter: '中心厚',
+                tableEdge: '周边厚',
+                unit: ' 毫米',
+                recalc: '重新计算',
+                back: '返回',
+                pleaseFill: '请填写所有参数！',
+                placeholderPupil: '请输入瞳孔间距',
+                placeholderFrame: '请输入镜框宽度',
+                placeholderNose: '请输入鼻间距'
+            },
+            en: {
+                title: 'Glasses Frame Calculator',
+                h1: 'Glasses Frame Calculator',
+                step1: 'Step 1: Input Parameters',
+                step2: 'Step 2: Calculation Results',
+                pupilDistance: 'Pupil Distance (mm):',
+                frameWidth: 'Frame Width (mm):',
+                noseDistance: 'Nose Distance (mm):',
+                lensMaterial: 'Lens Material:',
+                lensType: 'Lens Type:',
+                degree: 'Degree:',
+                selectDegree: 'Please select degree',
+                calculateBtn: 'Calculate Lens Thickness',
+                resultPupil: 'Pupil Distance = ',
+                resultFrame: 'Frame Width = ',
+                resultNose: 'Nose Distance = ',
+                resultMaterial: 'Lens Material = ',
+                resultType: 'Lens Type = ',
+                resultDegree: 'Degree = ',
+                tableDesign: 'Refractive Index / Design',
+                tableCenter: 'Center Thickness',
+                tableEdge: 'Edge Thickness',
+                unit: ' mm',
+                recalc: 'Recalculate',
+                back: 'Back',
+                pleaseFill: 'Please fill in all parameters!',
+                placeholderPupil: 'Enter pupil distance',
+                placeholderFrame: 'Enter frame width',
+                placeholderNose: 'Enter nose distance'
+            }
+        };
+
+        let currentLang = 'zh';
+
+        const materialNames = {
+            zh: { plastic: '塑料', glass: '玻璃', polycarbonate: '聚碳酸酯', trivex: 'Trivex' },
+            en: { plastic: 'Plastic', glass: 'Glass', polycarbonate: 'Polycarbonate', trivex: 'Trivex' }
+        };
+
+        // 材质选项顺序
+        const materialOrder = ['plastic', 'glass', 'polycarbonate', 'trivex'];
+
+        const lensTypeNames = {
+            zh: { 'aspheric': '非球面', 'spheric': '球面' },
+            en: { 'aspheric': 'Aspheric', 'spheric': 'Spherical' }
+        };
+
+        // 镜片类型完整显示名称
+        const lensTypeDisplay = {
+            '1.76-aspheric': { zh: '1.76非球面', en: '1.76 Aspheric' },
+            '1.74-aspheric': { zh: '1.74非球面', en: '1.74 Aspheric' },
+            '1.70-aspheric': { zh: '1.70非球面', en: '1.70 Aspheric' },
+            '1.67-aspheric': { zh: '1.67非球面', en: '1.67 Aspheric' },
+            '1.60-aspheric': { zh: '1.60非球面', en: '1.60 Aspheric' },
+            '1.60-spheric':  { zh: '1.60球面',   en: '1.60 Spheric' },
+            '1.50-aspheric': { zh: '1.50非球面', en: '1.50 Aspheric' },
+            '1.50-spheric':  { zh: '1.50球面',   en: '1.50 Spheric' }
+        };
+
+        const resultRows = [
+            { type: '1.76-aspheric', center: '1.0', edge: '3.4' },
+            { type: '1.74-aspheric', center: '1.0', edge: '3.6' },
+            { type: '1.70-aspheric', center: '1.0', edge: '3.6' },
+            { type: '1.67-aspheric', center: '1.1', edge: '3.9' },
+            { type: '1.60-aspheric', center: '1.3', edge: '4.4' },
+            { type: '1.60-spheric', center: '1.3', edge: '4.6' },
+            { type: '1.50-aspheric', center: '1.6', edge: '5.4' },
+            { type: '1.50-spheric', center: '2.0', edge: '6.1' }
+        ];
+
+        // 镜片类型选项顺序
+        const lensTypeOrder = ['1.76-aspheric', '1.74-aspheric', '1.70-aspheric', '1.67-aspheric', '1.60-aspheric', '1.60-spheric', '1.50-aspheric', '1.50-spheric'];
+
+        function populateSelects() {
+            var materialSel = document.getElementById('lensMaterial');
+            materialSel.innerHTML = '';
+            for (var i = 0; i < materialOrder.length; i++) {
+                var key = materialOrder[i];
+                var opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = materialNames[currentLang][key];
+                materialSel.appendChild(opt);
+            }
+
+            var typeSel = document.getElementById('lensType');
+            typeSel.innerHTML = '';
+            for (var j = 0; j < lensTypeOrder.length; j++) {
+                var typeKey = lensTypeOrder[j];
+                var typeOpt = document.createElement('option');
+                typeOpt.value = typeKey;
+                typeOpt.textContent = lensTypeDisplay[typeKey][currentLang];
+                typeSel.appendChild(typeOpt);
+            }
+        }
+
+        function renderResultTable() {
+            var tbody = document.getElementById('resultTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            for (var i = 0; i < resultRows.length; i++) {
+                var row = resultRows[i];
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td>' + lensTypeDisplay[row.type][currentLang] + '</td><td>' + row.center + '</td><td>' + row.edge + '</td>';
+                tbody.appendChild(tr);
+            }
+        }
+
         function calculate() {
-            const material = document.getElementById('material').value;
-            const power = document.getElementById('power').value;
-            const distance = document.getElementById('distance').value;
-            
-            if (!material || !power) {
-                alert('请选择材质和度数');
+            var pupilDistanceEl = document.getElementById('pupilDistance');
+            var frameWidthEl = document.getElementById('frameWidth');
+            var noseDistanceEl = document.getElementById('noseDistance');
+            var lensMaterialEl = document.getElementById('lensMaterial');
+            var lensTypeEl = document.getElementById('lensType');
+            var degreeEl = document.getElementById('degree');
+
+            if (!pupilDistanceEl || !frameWidthEl || !noseDistanceEl || !lensMaterialEl || !lensTypeEl || !degreeEl) {
+                alert(translations[currentLang].pleaseFill);
                 return;
             }
-            
-            document.getElementById('result-params').innerHTML = 
-                '中心距离 = ' + distance + ' 毫米<br><br>' +
-                '镜片材质 = ' + material + '<br><br>' +
-                '度数 = ' + power;
-            
-            document.getElementById('result-section').style.display = 'block';
+
+            const pupilDistance = pupilDistanceEl.value;
+            const frameWidth = frameWidthEl.value;
+            const noseDistance = noseDistanceEl.value;
+            const lensMaterial = lensMaterialEl.value;
+            const lensType = lensTypeEl.value;
+            const degree = degreeEl.value;
+
+            if (!pupilDistance || !frameWidth || !noseDistance || !lensMaterial || !lensType || !degree) {
+                alert(translations[currentLang].pleaseFill);
+                return;
+            }
+
+            var el;
+            el = document.getElementById('resultPupilDistance');
+            if (el) el.textContent = pupilDistance;
+            el = document.getElementById('resultFrameWidth');
+            if (el) el.textContent = frameWidth;
+            el = document.getElementById('resultNoseDistance');
+            if (el) el.textContent = noseDistance;
+            el = document.getElementById('resultLensMaterial');
+            if (el) el.textContent = materialNames[currentLang][lensMaterial];
+            el = document.getElementById('resultLensType');
+            if (el) el.textContent = lensTypeDisplay[lensType][currentLang];
+            el = document.getElementById('resultDegree');
+            if (el) el.textContent = degree;
+
+            el = document.getElementById('resultSection');
+            if (el) el.style.display = 'block';
+            updateContent();
         }
+
+        function resetCalculator() {
+            var el = document.getElementById('resultSection');
+            if (el) el.style.display = 'none';
+            el = document.getElementById('pupilDistance');
+            if (el) el.value = '64';
+            el = document.getElementById('frameWidth');
+            if (el) el.value = '140';
+            el = document.getElementById('noseDistance');
+            if (el) el.value = '20';
+            el = document.getElementById('lensMaterial');
+            if (el) el.value = 'plastic';
+            el = document.getElementById('lensType');
+            if (el) el.value = '1.76-aspheric';
+            el = document.getElementById('degree');
+            if (el) el.value = '';
+        }
+
+        function switchLang(lang) {
+            currentLang = lang;
+            populateSelects();
+            renderResultTable();
+            updateContent();
+            document.querySelectorAll('.lang-btn').forEach(function(btn) {
+                btn.classList.toggle('active',
+                    (lang === 'zh' && btn.textContent === '中文') ||
+                    (lang === 'en' && btn.textContent === 'English'));
+            });
+        }
+
+        function updateContent() {
+            var t = translations[currentLang];
+            document.title = t.title;
+            var h1 = document.querySelector('h1');
+            if (h1) h1.textContent = t.h1;
+
+            var steps = document.querySelectorAll('.step-indicator');
+            if (steps[0]) steps[0].textContent = t.step1;
+            if (steps[1]) steps[1].textContent = t.step2;
+
+            var labels = document.querySelectorAll('label');
+            var labelKeys = ['pupilDistance', 'frameWidth', 'noseDistance', 'degree', 'lensMaterial', 'lensType'];
+            for (var i = 0; i < labels.length && i < labelKeys.length; i++) {
+                labels[i].textContent = t[labelKeys[i]];
+            }
+
+            var inputs = document.querySelectorAll('input');
+            if (inputs[0]) inputs[0].placeholder = t.placeholderPupil;
+            if (inputs[1]) inputs[1].placeholder = t.placeholderFrame;
+            if (inputs[2]) inputs[2].placeholder = t.placeholderNose;
+
+            var defaultOpt = document.querySelector('#degree option[value=""]');
+            if (defaultOpt) defaultOpt.textContent = t.selectDegree;
+
+            var calcBtn = document.querySelector('.btn-calc');
+            if (calcBtn) calcBtn.textContent = t.calculateBtn;
+
+            var resultPs = document.querySelectorAll('#resultSection .result-info p');
+            var resultIds = ['resultPupilDistance', 'resultFrameWidth', 'resultNoseDistance', 'resultLensMaterial', 'resultLensType', 'resultDegree'];
+            var resultPrefixes = ['resultPupil', 'resultFrame', 'resultNose', 'resultMaterial', 'resultType', 'resultDegree'];
+            for (var j = 0; j < resultPs.length && j < resultIds.length; j++) {
+                var resultId = resultIds[j];
+                var displayValue = '';
+
+                if (resultId === 'resultPupilDistance') {
+                    displayValue = document.getElementById('pupilDistance') ? document.getElementById('pupilDistance').value : '64';
+                } else if (resultId === 'resultFrameWidth') {
+                    displayValue = document.getElementById('frameWidth') ? document.getElementById('frameWidth').value : '140';
+                } else if (resultId === 'resultNoseDistance') {
+                    displayValue = document.getElementById('noseDistance') ? document.getElementById('noseDistance').value : '20';
+                } else if (resultId === 'resultLensMaterial') {
+                    var materialKey = document.getElementById('lensMaterial') ? document.getElementById('lensMaterial').value : 'plastic';
+                    displayValue = materialNames[currentLang][materialKey] || materialNames.zh.plastic;
+                } else if (resultId === 'resultLensType') {
+                    var lensTypeKey = document.getElementById('lensType') ? document.getElementById('lensType').value : '1.76-aspheric';
+                    displayValue = lensTypeDisplay[lensTypeKey] ? lensTypeDisplay[lensTypeKey][currentLang] : lensTypeDisplay['1.76-aspheric'][currentLang];
+                } else if (resultId === 'resultDegree') {
+                    displayValue = document.getElementById('degree') ? document.getElementById('degree').value || '-4.50' : '-4.50';
+                }
+
+                if (resultPs[j]) {
+                    resultPs[j].innerHTML = t[resultPrefixes[j]] + '<span id="' + resultId + '">' + displayValue + '</span>' + (j < 3 ? t.unit : '');
+                }
+            }
+
+            var navLinks = document.querySelectorAll('.navigation a');
+            if (navLinks[0]) navLinks[0].textContent = t.recalc;
+            if (navLinks[1]) navLinks[1].textContent = t.back;
+
+            var resultTableHeaders = document.querySelectorAll('#resultSection thead th');
+            if (resultTableHeaders[0]) resultTableHeaders[0].textContent = t.tableDesign;
+            if (resultTableHeaders[1]) resultTableHeaders[1].textContent = t.tableCenter;
+            if (resultTableHeaders[2]) resultTableHeaders[2].textContent = t.tableEdge;
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            populateSelects();
+            renderResultTable();
+            document.getElementById('calcBtn').addEventListener('click', calculate);
+            updateContent();
+        });
     </script>
 </body>
 </html>
